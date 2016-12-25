@@ -69,6 +69,7 @@ int main()
 	set_interface_attribs (fdc, 115200, 0);
 	
 	ppm_file ppm(fdc);
+	//ppm_stream ppm(std::cout);
 
 	joystick joy("mappings.ini", "user_trims.ini", ppm);
 	
