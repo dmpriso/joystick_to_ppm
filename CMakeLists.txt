@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.4) 
+set (CMAKE_CXX_STANDARD 14)
+project(joystick_ppm_converter)
+file(GLOB sourcefiles "*.h" "*.cpp")
+add_executable(${PROJECT_NAME} ${sourcefiles})
+
+if (UNIX)
+	add_definitions(-DRASPBERRY_PI)
+	target_link_libraries(${PROJECT_NAME} pthread)
+endif()
