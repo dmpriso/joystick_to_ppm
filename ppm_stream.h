@@ -22,5 +22,18 @@ private:
 	
 };
 
+class ppm_file : public ppm_target
+{
+public:
+	ppm_file(int fd);
+	
+public:
+	void setChannelValue(unsigned char channel, float value) override;
+	
+private:
+	int m_fd;
+	
+};
+
 #endif
 
