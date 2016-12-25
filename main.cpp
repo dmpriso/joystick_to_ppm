@@ -65,7 +65,7 @@ int set_interface_attribs (int fd, int speed, int parity)
 
 int main()
 {
-	int fdc = open ("/dev/tty0", O_RDWR | O_NOCTTY | O_SYNC);
+	int fdc = open ("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
 	set_interface_attribs (fdc, 115200, 0);
 	
 	ppm_file ppm(fdc);
