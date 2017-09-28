@@ -144,6 +144,20 @@ joystick::configuration joystick::loadConfig(std::string strConfigPath)
 				button_action(subtrim ? ButtonActionType::AddSubTrim : ButtonActionType::AddTrim,
 					axis_id, value));
 		}
+		else if (is_prefix(section_name, "buttonize_axis", id))
+		{
+			int low_id = std::stoi(section_values["low_button_id"]);
+			int high_id = std::stoi(section_values["high_button_id"]);
+			
+			std::cout << "Adding axis buttonization" << std::endl
+				<< "Axis ID: " << id << std::endl
+				<< "Low value button ID: " << low_id << std::endl
+				<< "High value button ID: " << high_id << std::endl
+				<< std::endl;
+				
+			conf.Buttonizations.emplace(id,
+				buttonize_axis(low_id, high_id));
+		}
 	}
 	
 	std::cout << "Loading configuration done." << std::endl;

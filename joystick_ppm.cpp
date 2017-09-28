@@ -12,7 +12,7 @@ void ppm_mixer::set_mixing_value(unsigned char ppm_channel_id,
 		bool no_write)
 {
 	this->m_map[ppm_channel_id][mixing_id] = value;
-	
+
 	float fSum = 0.0f;
 	for (auto v : this->m_map[ppm_channel_id])
 	{
@@ -38,12 +38,11 @@ void joystick_ppm::onAxisUpdated(unsigned char number)
 {
 	// check if there is a mapping
 	auto item = this->m_config.AxisMappings.find(number);
+	auto value = this->get_axis(number);
 	if (item != this->m_config.AxisMappings.end())
 	{
 		// calc mapping
 		auto& mapping = item->second;
-		
-		auto value = this->get_axis(number);
 		
 		// apply trim
 		value += mapping.user_trim;
@@ -59,6 +58,33 @@ void joystick_ppm::onAxisUpdated(unsigned char number)
 		this->m_mixer.set_mixing_value(mapping.ppm_channel_id, 
 			value,
 			mapping.mixing_id);
+	}
+	
+	// check if this axis is to be buttonized
+	auto item2 = this->m_config.Buttonizations.find(number);
+	if (item2 != this->m_config.Buttonizations.end())
+	{
+		// check if low or high
+		auto& virt = item2->second;
+		this->updateVirtualButton(virt.low_button_id, (value < -0.5));
+		this->updateVirtualButton(virt.high_button_id, (value > 0.5));
+	}
+	
+}
+
+void joystick_ppm::updateVirtualButton(unsigned char number, bool value)
+{
+	bool bUpdate = true;
+	auto item = this->m_mapVirtualButtons.find(number);
+	if (item != this->m_mapVirtualButtons.end())
+	{
+		bUpdate = item->second != value;
+	}
+	this->m_mapVirtualButtons[number] = value;
+	
+	if (bUpdate)
+	{
+		this->put_button(number, value);
 	}
 }
 

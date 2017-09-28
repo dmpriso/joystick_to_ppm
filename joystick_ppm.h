@@ -73,11 +73,22 @@ public:
 		float value;
 	};
 	
+	struct buttonize_axis
+	{
+		inline buttonize_axis(int low_button_id, int high_button_id)
+			: low_button_id(low_button_id), high_button_id(high_button_id)
+		{}
+		
+		unsigned char low_button_id;
+		unsigned char high_button_id;
+	};
+	
 	struct configuration
 	{
 		std::map<unsigned char, axis_mapping_target> AxisMappings;
 		std::map<unsigned char, button_action> ButtonPressActions;
 		std::map<unsigned char, button_action> ButtonReleaseActions;
+		std::map<unsigned char, buttonize_axis> Buttonizations;
 	};
 
 public:
@@ -89,6 +100,7 @@ protected:
 	
 private:
 	void writePPM(unsigned char channel);
+	void updateVirtualButton(unsigned char number, bool value);
 	
 private:
 	void onAxisUpdated(unsigned char number) override;
@@ -102,6 +114,7 @@ private:
 protected:
 	configuration m_config;
 	std::map<unsigned char, float> m_mapSubtrims;
+	std::map<unsigned char, bool> m_mapVirtualButtons;
 
 private:
 	ppm_mixer m_mixer;

@@ -1,6 +1,7 @@
 #include "ppm_stream.h"
 #include <sstream>
 #include <unistd.h>
+#include <iostream>
 
 ppm_stream::ppm_stream(std::ostream& target)
 	: m_target(target)
@@ -27,6 +28,7 @@ ppm_file::ppm_file(int fd)
 
 void ppm_file::setChannelValue(unsigned char channel, float value)
 {
+	//std::cout << "we are here" << std::flush;
 	std::stringstream ss;
 
 	// convert value to PPM us
@@ -40,7 +42,7 @@ void ppm_file::setChannelValue(unsigned char channel, float value)
 	
 	// output that value as int
 	ss << "ppm:" << (int)channel << "," << (int)value << "\n" << std::flush;
-	
+
 	// write to fd
 	write(this->m_fd, ss.str().data(), ss.str().size());
 }

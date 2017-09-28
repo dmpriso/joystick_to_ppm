@@ -3,11 +3,11 @@
 //this programm will put out a PPM signal
 
 //////////////////////CONFIGURATION///////////////////////////////
-#define chanel_number 8  //set the number of chanels
+#define chanel_number 12  //set the number of chanels
 #define default_servo_value 1500  //set the default servo value
 #define PPM_FrLen 22500  //set the PPM frame length in microseconds (1ms = 1000µs)
 #define PPM_PulseLen 300  //set the pulse length
-#define onState 1  //set polarity of the pulses: 1 is positive, 0 is negative
+#define onState 0  //set polarity of the pulses: 1 is positive, 0 is negative
 #define sigPin 10  //set PPM signal output pin on the arduino
 //////////////////////////////////////////////////////////////////
 
@@ -15,27 +15,36 @@
 /*this array holds the servo values for the ppm signal
  change theese values in your code (usually servo values move between 1000 and 2000)*/
 int ppm[chanel_number];
+bool ppm_running;
 
-void setup(){  
+void setup(){ 
+  ppm_running = false;
   Serial.begin(115200);
-  
-  //initiallize default ppm values
-  for(int i=0; i<chanel_number; i++){
-    ppm[i]= default_servo_value;
-  }
+}
 
-  pinMode(sigPin, OUTPUT);
-  digitalWrite(sigPin, !onState);  //set the PPM signal pin to the default state (off)
+
+void startPPM(){
+  if (!ppm_running){
+    ppm_running = true;
+    
+    //initiallize default ppm values
+    for(int i=0; i<chanel_number; i++){
+      ppm[i]= default_servo_value;
+    }
   
-  cli();
-  TCCR1A = 0; // set entire TCCR1 register to 0
-  TCCR1B = 0;
-  
-  OCR1A = 100;  // compare match register, change this
-  TCCR1B |= (1 << WGM12);  // turn on CTC mode
-  TCCR1B |= (1 << CS11);  // 8 prescaler: 0,5 microseconds at 16mhz
-  TIMSK1 |= (1 << OCIE1A); // enable timer compare interrupt
-  sei();
+    pinMode(sigPin, OUTPUT);
+    digitalWrite(sigPin, !onState);  //set the PPM signal pin to the default state (off)
+    
+    cli();
+    TCCR1A = 0; // set entire TCCR1 register to 0
+    TCCR1B = 0;
+    
+    OCR1A = 100;  // compare match register, change this
+    TCCR1B |= (1 << WGM12);  // turn on CTC mode
+    TCCR1B |= (1 << CS11);  // 8 prescaler: 0,5 microseconds at 16mhz
+    TIMSK1 |= (1 << OCIE1A); // enable timer compare interrupt
+    sei();
+  }
 }
 
 char cmd[16];
@@ -63,10 +72,13 @@ void readLineFromSerial() {
     if (Serial.available() > 0) {
       auto bytRead = Serial.read();
       //Serial.write(bytRead);
+      //String tmp;
+      //tmp = "Character read: " + (int)bytRead;
+      //Serial.println(tmp);
 
       if (bytRead == ':' && iParamId == -1 || bytRead == ',' && iParamId == 0)
         iParamId++;
-      else if (bytRead == '\n')
+      else if (bytRead == '\n' || bytRead == '\r')
         return;
       else {
         char* target = cmd;
@@ -82,7 +94,16 @@ void readLineFromSerial() {
 }
 
 void loop(){
-  // TEST LOOP
+  // TEST LOOPs
+  /*
+  if (Serial.available() > 0) {
+    auto bytRead = Serial.read();
+    Serial.write(bytRead);
+  }
+
+  return;
+  */
+
   /*
   static int val = 1;
   
@@ -91,7 +112,7 @@ void loop(){
   if(ppm[0] <= 1000){ val = 1; }
   delay(10);
   */
-
+  
   // REAL LOOP
   while(true) {
     readLineFromSerial();
@@ -99,7 +120,8 @@ void loop(){
       int iChannel = atoi(param0);
       int iValue = atoi(param1);
 
-      if (iChannel >= 0 && iChannel <= 8 && iValue >= 800 && iValue <= 2200) {
+      if (iChannel >= 0 && iChannel < chanel_number && iValue >= 800 && iValue <= 2200) {
+        startPPM();
         Serial.println("Valid PPM cmd received");
         ppm[iChannel] = iValue;
       }

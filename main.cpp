@@ -65,10 +65,16 @@ int set_interface_attribs (int fd, int speed, int parity)
 
 int main()
 {
+	std::cout << "opening USB" << std::endl;
 	int fdc = open ("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
-	set_interface_attribs (fdc, 115200, 0);
+	set_interface_attribs (fdc, B115200, 0);
 	
 	ppm_file ppm(fdc);
+	//ppm_stream ppm(std::cout);
+
+	sleep(2);
+	
+	std::cout << "opening joystick" << std::endl;
 
 	joystick joy("mappings.ini", "user_trims.ini", ppm);
 	
@@ -89,6 +95,10 @@ int main()
 		else if (e.type == JS_EVENT_BUTTON)
 		{
 			joy.put_button(e.number, e.value != 0);
+		}
+		else
+		{
+			std::cout << "unknown type " << (int)e.type;
 		}
 	}
 	return 0;
