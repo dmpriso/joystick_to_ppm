@@ -2,7 +2,7 @@ Joystick to PPM Adapter using Raspberry PI and Arduino
 =========
 
 ## General
-*This project is still work in progress, I've done that for a FPV Groundstation. It does not have an UI (perhaps someone wants to write one?), instead, channel mappings are done using a configuration file.
+This project is still work in progress, I've done that for a FPV Groundstation. It does not have an UI (perhaps someone wants to write one?), instead, channel mappings are done using a configuration file.
 
 ## Hardware
 All you need is a Raspberry Pi, a Linux compatible Joystick and an Arduino board.
@@ -35,8 +35,8 @@ Install jstest on your raspberry and run
 jstest /dev/input/js0
 ```
 
-*I strongly recommend you to perform a joystick calibration and save the joystick configuration on your system. See the following article for instructions:
-http://aegidian.org/bb/viewtopic.php?t=12217#p178651 *
+_I strongly recommend you to perform a joystick calibration and save the joystick configuration on your system. See the following article for instructions:
+http://aegidian.org/bb/viewtopic.php?t=12217#p178651 _
 
 ### Axis mapping
 An axis mapping entry consists of the following elements:
