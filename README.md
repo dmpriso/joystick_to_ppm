@@ -35,8 +35,8 @@ Install jstest on your raspberry and run
 jstest /dev/input/js0
 ```
 
-_I strongly recommend you to perform a joystick calibration and save the joystick configuration on your system. See the following article for instructions:
-http://aegidian.org/bb/viewtopic.php?t=12217#p178651 _
+*I strongly recommend you to perform a joystick calibration and save the joystick configuration on your system. See the following article for instructions:*
+* http://aegidian.org/bb/viewtopic.php?t=12217#p178651 *
 
 ### Axis mapping
 An axis mapping entry consists of the following elements:
